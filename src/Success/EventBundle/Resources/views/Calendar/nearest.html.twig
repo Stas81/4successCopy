@@ -1,0 +1,83 @@
+{% extends "SuccessSiteBundle::basic_layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/successevent/css/4success.style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/successevent/css/jquery.countdownTimer.css') }}" />
+{% endblock %}
+
+{% block title %}Nearest Events Calendar{% endblock %}
+
+
+{% block body %}
+    <div class="modal fade" id="calendar-modal-event" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modal-content">
+        </div>
+    </div>
+    </div>    
+            <div id="main-row" class="row" >
+                <div class="col-xs-12">
+                    {{ render_esi( path('next_event') ) }}
+                </div>
+            </div>
+
+            <div id="main-row" class="row">
+                <div class="col-xs-6">
+                    {{ render_esi( path('day_events') ) }}
+                </div>
+                    
+                <div class="col-xs-6">
+                    {{ render_esi( path('week_events') ) }}
+                </div>
+            </div>
+        
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}          
+    <script type="text/javascript" src="{{ asset('bundles/successevent/js/jquery.countdown.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/successevent/js/jquery.countdownTimer.js') }}"></script>    
+    <script type="text/javascript">
+            $(function(){
+              $('#future_date').countdowntimer({                  
+                dateAndTime : dateAndTime,
+                startDate : startDate,
+                timeUp : timeisUp,
+                size : "lg"
+              });              
+                function timeisUp() {
+                    $('#webinar-enter-btn').removeClass('disabled');
+                    $('#future_date').text('Уже идет');
+                }                            
+            });
+        
+
+      $('body').on('hidden.bs.modal', '.modal', function () {
+        $('#modal-content').empty();
+      });
+      
+      $('body').on('click','.modal-btn',function(){
+
+        // scrolling feature
+        var eventsIframe = document.getElementById('events-calendar');        
+     
+        parent.postMessage("scroll_up", "*");
+        //$("html, body").animate({ scrollTop: 0 }, "slow");        
+        link = $(this).attr('href');
+        $('#modal-content').load(
+            link,
+            function(response, status, xhr) {
+            if (status === 'error') {
+                $('#modal-content').html('<h2>Whoops!</h2><p>Sorry, but there was an error:' + xhr.status + ' ' + xhr.statusText+ '</p>');                
+                }
+            return this;
+            }
+          );
+      });
+    </script> 
+
+    
+{% endblock %}
+
+

@@ -1,0 +1,11 @@
+parameters:
+    success_member.member_manager.class: Success\MemberBundle\Service\MemberManager
+    memberIdentityPlaceholder: email
+    
+services:
+    success.member.member_manager:
+        class: %success_member.member_manager.class%
+        arguments: [%memberIdentityPlaceholder%]
+        calls:
+             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+             - [setPlaceholderManager, ["@success.placeholder.placeholder_manager"]]

@@ -1,0 +1,39 @@
+{#{% extends "::base.html.twig" %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/successevent/css/jquery.countdown.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/successevent/css/4success.style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/successevent/css/bootstrap.min.css') }}" />
+
+{% endblock %}
+
+{% block body %}#}
+
+    
+    
+    {% if form is defined %}
+        <div class="signupform">
+            {% form_theme form 'SuccessEventBundle:Form:fields.html.twig' %}
+            {{ form(form, { 'attr': {'id': 'sign_up_form'} }) }}
+        </div>
+        
+        {% block javascripts %}
+            <script>
+                $('.submit-btn').click(function(event){
+                    event.preventDefault();
+                    var $url = $( "#sign_up_form" ).attr('action');
+                    $.post($url, $( "#sign_up_form" ).serialize())
+                        .done(function(data) {
+                        $('#modal-content').html(data);
+                    });            
+            });    
+            </script>
+        {% endblock %}        
+    {% endif %}
+
+    {% if message is defined %}
+        <div class="signupform">
+            <p>{{ message }}</p>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">OK</button>
+        </div>
+    {% endif %}

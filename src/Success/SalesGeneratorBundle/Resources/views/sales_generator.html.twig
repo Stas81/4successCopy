@@ -1,0 +1,61 @@
+{% extends "SuccessSiteBundle::basic_layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/successsalesgenerator/css/sales_generator.css') }}" />
+{% endblock stylesheets %}
+
+{% block javascripts %}
+        {{ parent() }}
+        <script type="text/javascript" src="{{ asset('bundles/successsalesgenerator/js/sales_generator.js') }}"></script>
+        <script type="text/javascript">
+            $('.refresh-question').on('click', function(event) {
+               $.ajax({
+                    url : '{{ path('refresh-question') }}',
+                    type : 'POST',
+                    data : {
+                      'question_id' : $(this).attr('id')
+                    },
+                    success : function(question) {
+                        $("#question-text").html(question);
+                    }
+               });
+            });
+        </script>
+    {% endblock javascripts %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-primary question">
+            <div class="panel-heading">
+              <h3 class="panel-title">Вопрос <span class="glyphicon glyphicon-refresh pull-right refresh-question" id="{{ question.id }}"></span></h3>
+            </div>
+            <div class="panel-body">
+              <h6>
+                  <p id="question-text">{{ question.text }}</p>
+              </h6>
+            </div>
+        </div>
+        
+        <div class="container">
+        {% for key, answer in question.answers %}
+            {% set answerIndex = key + 1 %}
+            {% set nextQuestion = answer.nextQuestion is null ? '#' : path('sales_generator', {'question_id' : answer.nextQuestion.id }) %}
+            <div class="panel panel-info answer">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Ответ №{{ answerIndex }}</h3>
+                </div>
+                <div class="panel-body">
+                  <h6>
+                      <a href="{{ nextQuestion }}" class="new-question">{{ answer.text }}</a>
+                  </h6>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    
+    
+{% endblock content %}
+
+{% block footer %}{% endblock footer %}

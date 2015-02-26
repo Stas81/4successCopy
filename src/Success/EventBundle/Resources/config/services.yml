@@ -1,0 +1,20 @@
+imports:
+    - { resource: admin.yml }
+
+parameters:
+    success.event.event_manager.class: Success\EventBundle\Service\EventManager
+
+services:
+    success.event.event_manager:
+        class: %success.event.event_manager.class%
+        calls:
+             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+             - [setNotificationManager, ["@success.notification.notification_manager"]]
+             - [setPlaceholderManager, ["@success.placeholder.placeholder_manager"]]
+             - [setSettingsManager, ["@success.settings.settings_manager"]]
+     
+    success.event.calendar_event_listener:
+        class: Success\EventBundle\EventListener\CalendarEventListener
+        arguments: [ @success.event.event_manager ]
+        tags:
+            - {name: kernel.event_listener, event: calendar.load_events, method: loadEvents}

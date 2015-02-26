@@ -1,0 +1,56 @@
+{% extends "::base.html.twig" %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/successevent/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/successevent/css/4success.style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/adesignscalendar/css/fullcalendar/fullcalendar.css') }}" />
+
+
+{% endblock %}
+
+{% block title %}Calendar{% endblock %}
+
+
+{% block body %}
+    <div id="calendaContainer">
+        {% include 'ADesignsCalendarBundle::calendar.html.twig' %}                
+    </div>
+        
+    <div class="modal fade" id="calendar-modal-event" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modal-content">
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/successevent/js/jquery-1.11.1.min.js') }}"></script>    
+    <script type="text/javascript" src="{{ asset('bundles/successevent/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/fullcalendar/jquery.fullcalendar.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/successevent/js/calendar-settings.js') }}"></script>    
+    <script type="text/javascript" src="{{ asset('bundles/successevent/js/jquery.countdown.js') }}"></script>
+
+    <script>
+      $('body').on('hidden.bs.modal', '.modal', function () {
+        $('#modal-content').empty();
+      });
+      $('body').on('click','.modal-btn',function(){
+        link = $(this).attr('href');
+         
+        $('#modal-content').load(
+            link,
+            function(response, status, xhr) {
+            if (status === 'error') {
+                $('#modal-content').html('<h2>Whoops!</h2><p>Sorry, but there was an error:' + xhr.status + ' ' + xhr.statusText+ '</p>');                
+                }
+            return this;
+            }
+          );
+      });
+    </script>
+{% endblock %}
+
+
